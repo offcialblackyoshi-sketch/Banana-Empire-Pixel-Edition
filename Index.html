@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULTRA PIXEL BANANA: GNN EXPANSION</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --pixel-border: 6px solid #000;
+            --accent: #facc15;
+            --main-bg: #064e3b;
+            --panel-bg: #78350f;
+            --header-bg: #166534;
+            --text-box: #fef9c3;
+        }
+
+        .pixel-engine { image-rendering: pixelated; filter: url(#pixelate) contrast(150%) saturate(130%); }
+
+        /* THEMES */
+        body.theme-default { --main-bg: #064e3b; --accent: #facc15; }
+        body.theme-newyear { --main-bg: #1e1b4b; --panel-bg: #312e81; --header-bg: #4338ca; --accent: #fcd34d; }
+        body.theme-valentine { --main-bg: #4c0519; --panel-bg: #831843; --header-bg: #9d174d; --accent: #fda4af; }
+        body.theme-stpatricks { --main-bg: #052e16; --panel-bg: #14532d; --header-bg: #166534; --accent: #4ade80; }
+        body.theme-july4 { --main-bg: #082f49; --panel-bg: #1e3a8a; --header-bg: #b91c1c; --accent: #93c5fd; }
+        body.theme-halloween { --main-bg: #0c0a09; --panel-bg: #441907; --header-bg: #ea580c; --accent: #fb923c; }
+        body.theme-thanksgiving { --main-bg: #451a03; --panel-bg: #78350f; --header-bg: #b45309; --accent: #fcd34d; }
+        body.theme-christmas { --main-bg: #052e16; --panel-bg: #7f1d1d; --header-bg: #991b1b; --accent: #fecaca; }
+
+        body, html { height: 100%; margin: 0; font-family: 'VT323', monospace; background-color: var(--main-bg); overflow: hidden; display: flex; flex-direction: column; transition: all 0.5s ease; }
+        
+        /* MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: var(--text-box); border: var(--pixel-border); width: 85%; max-width: 650px; padding: 25px; box-shadow: 10px 10px 0 #000; max-height: 85vh; overflow-y: auto; }
+        .modal-header { font-size: 3rem; color: #000; border-bottom: 6px solid #000; margin-bottom: 20px; text-align: center; text-transform: uppercase; }
+        .modal-text { font-size: 1.4rem; color: #000; line-height: 1.3; }
+        .close-btn { background: #ef4444; color: white; border: var(--pixel-border); padding: 12px 25px; font-family: 'VT323'; font-size: 1.8rem; cursor: pointer; display: block; margin: 20px auto 0; box-shadow: 4px 4px 0 #000; }
+        .help-trigger { background: #000; color: #facc15; padding: 10px; text-align: center; cursor: pointer; border-bottom: var(--pixel-border); font-size: 1.4rem; letter-spacing: 1px; }
+
+        /* GAME LAYOUT */
+        .main-game-area { position: relative; z-index: 1; display: grid; grid-template-columns: 320px 1fr 320px; flex: 1; padding: 10px; gap: 15px; height: calc(100vh - 40px); }
+        .side-panel { border: var(--pixel-border); background: var(--panel-bg); display: flex; flex-direction: column; box-shadow: 8px 8px 0 #000; overflow-y: auto; }
+        .center-stage { display: flex; flex-direction: column; align-items: center; padding: 10px; gap: 10px; }
+        .header { background: var(--header-bg); color: var(--accent); padding: 12px; font-size: 1.8rem; text-align: center; border-bottom: var(--pixel-border); text-transform: uppercase; position: sticky; top: 0; z-index: 10;}
+
+        /* CLICKER & PARTICLES */
+        #particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .particle { position: absolute; font-size: 24px; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        #golden-item { position: fixed; font-size: 80px; cursor: pointer; z-index: 100; display: none; filter: drop-shadow(0 0 30px gold) brightness(1.4); animation: g-float 2s infinite ease-in-out; }
+        @keyframes g-float { 0%, 100% { transform: scale(1) rotate(-10deg); } 50% { transform: scale(1.2) rotate(10deg); } }
+
+        .stats-box { background: var(--text-box); border: var(--pixel-border); padding: 15px; width: 100%; text-align: center; box-shadow: 6px 6px 0 #000; }
+        #emoji-clicker { font-size: 140px; cursor: pointer; user-select: none; transition: transform 0.05s; margin: 15px 0; }
+        #emoji-clicker:active { transform: scale(0.85); }
+
+        .news-ticker { height: 45px; background: #000; border-top: var(--pixel-border); color: var(--accent); display: flex; align-items: center; overflow: hidden; position: relative; z-index: 10; }
+        .ticker-text { display: inline-block; padding-left: 100%; animation: scroll-news 50s linear infinite; font-size: 1.6rem; white-space: nowrap; }
+        @keyframes scroll-news { from { transform: translateX(0); } to { transform: translateX(-800%); } }
+
+        .buy-card { background: var(--header-bg); border: 4px solid #000; color: var(--accent); padding: 10px; margin: 8px; cursor: pointer; text-align: left; display: none; box-shadow: 4px 4px 0 #000; }
+        .buy-card.visible { display: block; }
+        .buy-card.disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+        .buy-card span { float: right; font-weight: bold; }
+        .inv-row { border-bottom: 2px solid #000; padding: 8px 12px; background: rgba(0,0,0,0.3); color: white; font-size: 1.2rem; }
+        
+        .leaderboard-box { width: 100%; background: #000; border: var(--pixel-border); color: var(--accent); padding: 10px; box-shadow: 6px 6px 0 #000; flex: 1; overflow-y: auto; }
+        .lb-row { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #333; font-size: 1.3rem; }
+        .me { background: #222; border-left: 6px solid var(--accent); }
+    </style>
+</head>
+<body id="game-body" class="theme-default">
+
+<div id="welcome-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">Empire Initialized</div>
+        <div class="modal-text">
+            <p><strong>🍌 CLICK:</strong> Use the central fruit to generate your starting capital.</p>
+            <p><strong>🏢 INFRASTRUCTURE:</strong> The right panel contains automation (Monkeys, Factories). The left contains efficiency upgrades.</p>
+            <p><strong>🗞️ GNN NEWS:</strong> Watch the ticker at the bottom! It pulls real history and absurd banana fiction based on your chosen season.</p>
+            <p><strong>🍀 SEASONS:</strong> Swapping seasons changes everything—from visuals to the types of news stories appearing on your feed.</p>
+        </div>
+        <button class="close-btn" onclick="closeWelcome()">BEGIN OPERATION</button>
+    </div>
+</div>
+
+<div id="help-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header">Manual V.2</div>
+        <div class="modal-text" id="help-content"></div>
+        <button class="close-btn" onclick="toggleHelp()">RESUME PRODUCTION</button>
+    </div>
+</div>
+
+<div id="particle-container"></div>
+<div id="golden-item" class="pixel-engine" onclick="triggerFrenzy()">🍌</div>
+
+<svg width="0" height="0" style="position:absolute"><filter id="pixelate" x="0" y="0"><feFlood x="4" y="4" height="2" width="2"/><feComposite width="4" height="4"/><feTile/><feComposite in="SourceGraphic" operator="in"/><feMorphology operator="dilate" radius="1.5"/></filter></svg>
+
+<div class="main-game-area">
+    <div class="side-panel">
+        <div class="help-trigger" onclick="toggleHelp()">[ DOCUMENTATION ]</div>
+        <div class="header">Market</div>
+        <div id="market-list"></div>
+        <div class="header" style="margin-top:20px;">Timeline</div>
+        <div style="padding:15px;">
+            <select id="theme-sel" onchange="setTheme(this.value)" style="width:100%; font-family:'VT323'; background:#000; color:white; border:4px solid var(--accent); font-size:1.4rem;">
+                <option value="default">JUNGLE 🌴</option>
+                <option value="newyear">NEW YEAR 🎆</option>
+                <option value="valentine">VALENTINE ❤️</option>
+                <option value="stpatricks">ST. PATRICK 🍀</option>
+                <option value="july4">INDEPENDENCE 🇺🇸</option>
+                <option value="halloween">SPOOKY 🎃</option>
+                <option value="thanksgiving">HARVEST 🦃</option>
+                <option value="christmas">WINTER 🎄</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="center-stage">
+        <div id="frenzy-timer" style="display:none; color:gold; font-size:1.8rem; font-weight:bold; text-shadow:2px 2px #000;">FRENZY ACTIVE: <span id="ftime">30</span>s</div>
+        <div style="background:#000; border:4px solid var(--accent); padding:8px 20px; cursor:pointer; width:100%; text-align:center;" onclick="renameEmpire()">
+            <div id="name-tag" style="color:white; font-size: 1.6rem;">[ RENAME EMPIRE ]</div>
+        </div>
+        <div class="stats-box">
+            <div id="score" style="font-size: 4rem; color: #000; line-height:1;">0</div>
+            <div style="display:flex; justify-content: space-around; font-size: 1.5rem; color: #000; border-top: 3px solid #000; margin-top:10px; padding-top:5px;">
+                <div>BPS: <span id="bps">0</span></div>
+                <div>POWER: <span id="pow">1</span></div>
+            </div>
+        </div>
+        <div id="emoji-clicker" class="pixel-engine">🍌</div>
+        <div class="leaderboard-box"><div id="lb-content">Synchronizing with Global Feed...</div></div>
+    </div>
+
+    <div class="side-panel">
+        <div class="header">Producers</div>
+        <div id="producer-list"></div>
+        <div class="header" style="margin-top:10px;">Assets</div>
+        <div id="inv-list"></div>
+    </div>
+</div>
+
+<div class="news-ticker"><div class="ticker-text" id="news-content">GNN: CONNECTING...</div></div>
+
+<script>
+    const firebaseConfig = { apiKey: "AIzaSyCTmXjtfuN-2DGJq9IUpCVvDk88IkFQSFg", authDomain: "banana-empire-42fda.firebaseapp.com", databaseURL: "https://banana-empire-42fda-default-rtdb.firebaseio.com", projectId: "banana-empire-42fda", storageBucket: "banana-empire-42fda.firebasestorage.app", messagingSenderId: "833181965750", appId: "1:833181965750:web:2abf119335bee9a0157517" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let bananas = 0, bps = 0, clickPower = 1, currentTheme = 'default';
+    let myName = localStorage.getItem('bananaName') || "CEO_" + Math.floor(Math.random() * 999);
+    let isFrenzy = false, frenzyMult = 1;
+
+    // OVERFLOWING NEWS DATABASE
+    const newsDatabase = {
+        default: [
+            "[REAL] Bananas are berries, but strawberries are not.", "[REAL] Over 100 billion bananas are eaten globally every year.",
+            "[FAKE] Global shortage of curved fruit leads to 'Straight Banana' riots.", "[FAKE] Local monkey launches space program using peel-based fuel.",
+            "[REAL] The Gros Michel was the main banana variety until it was wiped out in the 1950s.", "[FAKE] Scientists prove that talking to your banana makes it 20% sweeter.",
+            "[REAL] Bananas contain a small amount of Potassium-40, making them slightly radioactive.", "[FAKE] New study finds humans are 98% genetically identical to a plantain."
+        ],
+        newyear: [
+            "[REAL] In Spain, it's tradition to eat 12 grapes at midnight for luck.", "[REAL] The first Times Square ball drop was in 1907.",
+            "[FAKE] World resolutions to 'Eat More Fruit' causes 400% surge in banana stock.", "[FAKE] New Year's Eve ball replaced with giant yellow fruit; crowd confused.",
+            "[REAL] Antarctica holds an annual 'IceStock' music festival to ring in the New Year.", "[FAKE] Time travel discovered on Jan 1st; world stuck in loop of eating breakfast.",
+            "[REAL] Ancient Romans celebrated the New Year in March until the calendar change.", "[FAKE] 2026 postponed until everyone finishes their current banana."
+        ],
+        valentine: [
+            "[REAL] The first Valentine was sent in 1415 from the Tower of London.", "[REAL] Over 145 million greeting cards are exchanged today.",
+            "[FAKE] Cupid replaces arrows with bananas; love levels hit all-time high.", "[FAKE] Man marries banana; says the relationship is 'very peeling'.",
+            "[REAL] Richard Cadbury created the first heart-shaped chocolate box in the 1860s.", "[FAKE] Single people across the globe organize 'Banana Peel Slip' flash mobs.",
+            "[REAL] St. Valentine is the patron saint of beekeepers and epilepsy.", "[FAKE] Roses are red, bananas are yellow, if you don't click now, you're a weird fellow."
+        ],
+        stpatricks: [
+            "[REAL] St. Patrick was actually born in Britain, not Ireland.", "[REAL] The first St. Paddy's parade was held in Florida in 1601.",
+            "[FAKE] Chicago dyes the river yellow; citizens demand a refund.", "[FAKE] Leprechaun caught hoarding potassium instead of gold.",
+            "[REAL] Blue was the original color associated with St. Patrick.", "[FAKE] Four-leaf bananas discovered in the Amazon; grants infinite clicks for 5 seconds.",
+            "[REAL] There are no snakes in Ireland because it was too cold for them to migrate.", "[FAKE] Guinness replaces hops with banana extract; pub riots reported."
+        ],
+        july4: [
+            "[REAL] Three US presidents have died on July 4th.", "[REAL] 150 million hot dogs are eaten on this day annually.",
+            "[FAKE] Bald Eagle spotted carrying 50lb banana; national anthem changes.", "[FAKE] Fireworks display shaped like a banana causes massive hunger.",
+            "[REAL] The Declaration was signed by 56 men.", "[FAKE] Liberty Bell crack was actually caused by a dropped fruit, says new theory.",
+            "[REAL] Thomas Jefferson wrote the first draft on a portable desk.", "[FAKE] Mount Rushmore to add a giant banana carving for 'Fruit Visibility Month'."
+        ],
+        halloween: [
+            "[REAL] The name Halloween comes from 'All Hallows' Eve'.", "[REAL] Jack-o'-lanterns were originally made from turnips.",
+            "[FAKE] Haunted banana peel causes 12-car pileup in local kitchen.", "[FAKE] Zombies refuse to eat brains; demand 'High-Potassium' snacks.",
+            "[REAL] Harry Houdini died on Halloween in 1926.", "[FAKE] Vampire bats switch to banana smoothies; fangs turn bright yellow.",
+            "[REAL] Halloween is the second-largest commercial holiday in the US.", "[FAKE] Ghost caught on camera slipping on own ectoplasm after eating a peel."
+        ],
+        thanksgiving: [
+            "[REAL] Thanksgiving was not a national holiday until 1863.", "[REAL] Female turkeys do not gobble; only males do.",
+            "[FAKE] Turkey escapes oven by wearing a banana disguise.", "[FAKE] Gravy replaced by liquified banana; dinner guests politely leave.",
+            "[REAL] The first Thanksgiving lasted for three whole days.", "[FAKE] Pilgrims actually brought 500 crates of bananas on the Mayflower.",
+            "[REAL] Sarah Josepha Hale, who wrote 'Mary Had a Little Lamb', helped save the holiday.", "[FAKE] Football game cancelled; players decide to have a banana-eating contest instead."
+        ],
+        christmas: [
+            "[REAL] Jingle Bells was originally a Thanksgiving song.", "[REAL] The tallest Christmas tree ever was 221 feet tall.",
+            "[FAKE] Santa trades reindeer for high-speed monkeys; efficiency up 900%.", "[FAKE] North Pole discovered to be a giant frozen banana dessert.",
+            "[REAL] Silent Night is the most recorded Christmas song in history.", "[FAKE] Elves on strike; demand 3 bananas per toy manufactured.",
+            "[REAL] In Japan, KFC is a traditional Christmas Eve dinner.", "[FAKE] Frosty the Snowman's nose replaced by a banana; he's much happier now."
+        ]
+    };
+
+    const upgrades = {
+        market: [ {id:'m1', name:'Plastic Peeler', cost:15, power:1}, {id:'m2', name:'Metal Knife', cost:100, power:5}, {id:'m3', name:'Slicer', cost:500, power:15}, {id:'m4', name:'Nano-Blade', cost:2000, power:50}, {id:'m5', name:'Laser', cost:10000, power:200} ],
+        producer: [ {id:'p1', name:'Monkey', cost:50, bps:2, icon:'🐒'}, {id:'p2', name:'Tree', cost:250, bps:10, icon:'🌳'}, {id:'p3', name:'Truck', cost:1000, bps:45, icon:'🚚'}, {id:'p4', name:'Farm', cost:5000, bps:150, icon:'🚜'}, {id:'p5', name:'Factory', cost:20000, bps:500, icon:'🏭'} ]
+    };
+    let counts = {}; [...upgrades.market, ...upgrades.producer].forEach(u => counts[u.id] = 0);
+
+    const seasonalIcons = { default:'🍌', halloween:'🎃', christmas:'🎄', newyear:'🎆', valentine:'❤️', stpatricks:'🍀', july4:'🇺🇸', thanksgiving:'🦃' };
+
+    // MODAL & UI LOGIC
+    if (!localStorage.getItem('returningPlayer')) { document.getElementById('welcome-modal').style.display = 'flex'; }
+    function closeWelcome() { document.getElementById('welcome-modal').style.display = 'none'; localStorage.setItem('returningPlayer', 'true'); }
+    function toggleHelp() {
+        const modal = document.getElementById('help-modal');
+        document.getElementById('help-content').innerHTML = `
+            <p><strong>GOLDEN FRENZY:</strong> Every 50 seconds, a Golden Banana spawns. Click it for 30s of 2X Production!</p>
+            <p><strong>FOG OF WAR:</strong> Items are hidden until you have 70% of the funds to buy them.</p>
+            <p><strong>CLOUD DATA:</strong> Your progress is synced to the global leaderboard every 5 seconds.</p>
+            <p><strong>SEASONAL NEWS:</strong> Switch seasons to see the overflow of Real vs Fake facts.</p>
+        `;
+        modal.style.display = (modal.style.display === 'none') ? 'flex' : 'none';
+    }
+
+    // THEME & NEWS ROTATION
+    function setTheme(v) {
+        currentTheme = v; document.body.className = 'theme-' + v;
+        rotateNews();
+        document.getElementById('emoji-clicker').innerText = seasonalIcons[v];
+    }
+    function rotateNews() {
+        const pool = newsDatabase[currentTheme];
+        document.getElementById('news-content').innerText = pool[Math.floor(Math.random()*pool.length)];
+    }
+
+    // GAME LOOP
+    function spawnGolden() {
+        const g = document.getElementById('golden-item'); g.style.left = Math.random()*70+15+'vw'; g.style.top = Math.random()*70+15+'vh';
+        g.style.display = 'block'; setTimeout(()=>g.style.display='none', 7000);
+    }
+    function triggerFrenzy() {
+        if(isFrenzy) return; isFrenzy = true; frenzyMult = 2;
+        document.getElementById('golden-item').style.display='none'; document.getElementById('frenzy-timer').style.display='block';
+        let t = 30; const clock = setInterval(() => {
+            t--; document.getElementById('ftime').innerText = t;
+            if(t<=0) { clearInterval(clock); isFrenzy=false; frenzyMult=1; document.getElementById('frenzy-timer').style.display='none'; }
+        }, 1000);
+    }
+
+    function buyMarket(id) {
+        const u = upgrades.market.find(x => x.id === id);
+        if(bananas >= u.cost) { bananas -= u.cost; clickPower += u.power; counts[id]++; updateUI(); }
+    }
+    function buyProducer(id) {
+        const u = upgrades.producer.find(x => x.id === id);
+        if(bananas >= u.cost) { bananas -= u.cost; bps += u.bps; counts[id]++; updateUI(); }
+    }
+
+    function updateUI() {
+        document.getElementById('score').innerText = Math.floor(bananas).toLocaleString();
+        document.getElementById('bps').innerText = (bps * frenzyMult).toLocaleString();
+        document.getElementById('pow').innerText = (clickPower * frenzyMult).toLocaleString();
+        document.getElementById('name-tag').innerText = myName;
+        [...upgrades.market, ...upgrades.producer].forEach(u => {
+            const btn = document.getElementById('btn-' + u.id);
+            if(bananas >= u.cost * 0.7 || counts[u.id] > 0) btn.classList.add('visible');
+            btn.classList.toggle('disabled', bananas < u.cost);
+        });
+        let inv = ""; upgrades.producer.forEach(u => { if(counts[u.id]>0) inv += `<div class="inv-row">${u.icon} ${u.name}: ${counts[u.id]}</div>`; });
+        document.getElementById('inv-list').innerHTML = inv || "No assets acquired...";
+    }
+
+    function renameEmpire() {
+        const n = prompt("Change Empire ID?");
+        if(n) { db.ref('players/' + myName).remove(); myName = n.substring(0, 12).toUpperCase(); localStorage.setItem('bananaName', myName); updateUI(); }
+    }
+
+    // CORE INITIALIZATION
+    upgrades.market.forEach(u => document.getElementById('market-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyMarket('${u.id}')">${u.name} <span>$${u.cost}</span></div>`);
+    upgrades.producer.forEach(u => document.getElementById('producer-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyProducer('${u.id}')">${u.name} <span>$${u.cost}</span></div>`);
+    
+    setTheme('default');
+    document.getElementById('emoji-clicker').onclick = () => { bananas += (clickPower * frenzyMult); updateUI(); };
+    
+    setInterval(() => { const p = document.createElement('div'); p.className='particle'; p.innerText=seasonalIcons[currentTheme]; p.style.left=Math.random()*100+'vw'; p.style.animationDuration=(Math.random()*3+3)+'s'; document.getElementById('particle-container').appendChild(p); setTimeout(()=>p.remove(), 6000); }, 400);
+    setInterval(spawnGolden, 50000);
+    setInterval(() => { bananas += (bps * frenzyMult)/10; updateUI(); }, 100);
+    setInterval(() => { db.ref('players/' + myName).set({ name: myName, score: Math.floor(bananas) }); }, 5000);
+    setInterval(rotateNews, 15000);
+
+    db.ref('players').orderByChild('score').limitToLast(10).on('value', (snap) => {
+        const val = snap.val(); let p = []; for(let k in val) p.push(val[k]);
+        p.sort((a,b) => b.score - a.score);
+        document.getElementById('lb-content').innerHTML = p.map((x, i) => `<div class="lb-row ${x.name === myName ? 'me' : ''}"><span>#${i+1} ${x.name}</span><span>${x.score.toLocaleString()}</span></div>`).join('');
+    });
+</script>
+</body>
+</html>
