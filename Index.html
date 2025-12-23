@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banana Empire: Pixel Edition</title>
+    <title>ULTRA PIXEL BANANA: HALL OF FAME</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
@@ -29,9 +29,6 @@
         body.theme-christmas { --main-bg: #052e16; --accent: #ef4444; --header-bg: #991b1b; --panel-bg: #7f1d1d; --text-box: #fee2e2; }
         body.theme-valentine { --main-bg: #4c0519; --accent: #fda4af; --header-bg: #9d174d; --panel-bg: #831843; --text-box: #ffe4e6; }
         body.theme-newyear { --main-bg: #1e1b4b; --accent: #fcd34d; --header-bg: #312e81; --panel-bg: #1e1b4b; --text-box: #eef2ff; }
-        body.theme-mlk { --main-bg: #422006; --accent: #fbbf24; --header-bg: #713f12; --panel-bg: #451a03; --text-box: #fef3c7; }
-        body.theme-memorial { --main-bg: #1e3a8a; --accent: #ef4444; --header-bg: #1e40af; --panel-bg: #1e3a8a; --text-box: #f8fafc; }
-        body.theme-july4 { --main-bg: #7f1d1d; --accent: #f8fafc; --header-bg: #1e3a8a; --panel-bg: #0f172a; --text-box: #fee2e2; }
 
         body, html { height: 100%; margin: 0; font-family: 'VT323', monospace; background-color: var(--main-bg); overflow: hidden; display: flex; flex-direction: column; transition: all 0.5s ease; }
         .pixel-engine { image-rendering: pixelated; filter: url(#pixelate) contrast(160%) saturate(140%) drop-shadow(0 8px 0 rgba(0,0,0,0.4)); display: inline-block; }
@@ -48,19 +45,14 @@
         
         .owned-tag { position: absolute; top: -12px; right: -5px; background: #000; color: #fff; padding: 2px 8px; font-size: 1rem; border: 2px solid var(--accent); z-index: 5; }
         
-        .empire-box { background: #000; border: var(--pixel-border); color: var(--accent); padding: 5px 20px; margin-bottom: 10px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); position: relative; display: flex; align-items: center; gap: 10px; }
+        .empire-box { background: #000; border: var(--pixel-border); color: var(--accent); padding: 5px 20px; margin-bottom: 10px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); position: relative; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .rename-btn { background: #333; color: #fff; border: 2px solid var(--accent); font-family: 'VT323'; cursor: pointer; font-size: 1rem; padding: 2px 6px; }
-        .rename-btn:hover { background: var(--accent); color: #000; }
 
         .stats-box { background: var(--text-box); border: var(--pixel-border); padding: 12px; width: 95%; text-align: center; box-shadow: 10px 10px 0 #000; }
         .score-display { font-size: 4rem; color: #000; line-height: 0.9; }
 
-        #asset-display { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .asset-row { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent); padding: 8px; color: #fff; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
-        .asset-icon { font-size: 24px; filter: url(#pixelate); }
-
         .leaderboard-container { width: 100%; background: #000; border: var(--pixel-border); color: var(--accent); flex: 1; overflow: hidden; margin-top: 15px; box-shadow: 8px 8px 0 rgba(0,0,0,0.5); display: flex; flex-direction: column; }
-        #lb-content { overflow-y: auto; flex: 1; font-size: 1.4rem; padding: 5px; }
+        #lb-content, #hof-content { overflow-y: auto; flex: 1; font-size: 1.4rem; padding: 5px; }
 
         #emoji-clicker { font-size: 180px; cursor: pointer; user-select: none; transition: transform 0.05s; margin: 5px 0; }
         #emoji-clicker:active { transform: scale(0.85); }
@@ -71,8 +63,7 @@
 
         #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal { background: var(--panel-bg); border: var(--pixel-border); color: #fff; max-width: 600px; padding: 30px; box-shadow: 15px 15px 0 #000; position: relative; }
-        .help-btn { position: absolute; top: 8px; right: 10px; background: #000; color: #fff; border: 2px solid var(--accent); cursor: pointer; padding: 2px 8px; font-size: 1.2rem; }
-
+        
         #particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .falling-item { position: absolute; font-size: 25px; animation: fall linear forwards; cursor: pointer; pointer-events: auto; }
         .rare-item { font-size: 60px; z-index: 999; animation: rare-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), fall 8s linear forwards; }
@@ -90,9 +81,8 @@
         <h1 style="color:var(--accent); text-align:center;">WELCOME TO BANANA EMPIRE</h1>
         <ul style="font-size:1.4rem; list-style-type: '🍌 ';">
             <li><b>EMPIRE GROWTH:</b> Click the center emoji to harvest.</li>
-            <li><b>RARITIES:</b> 20% for <b>GOLDEN</b> (50x) and 1% for <b>ANGELIC</b> (500x) every 60s!</li>
-            <li><b>RENAME:</b> Click the small button next to your name to change it anytime.</li>
-            <li><b>AUTOSAVE:</b> Progress saves every 30s.</li>
+            <li><b>RARITIES:</b> 20% <b>GOLDEN</b> (50x) & 1% <b>ANGELIC</b> (500x) every 60s!</li>
+            <li><b>HALL OF FAME:</b> See the legendary tycoons with the most Rebirths.</li>
         </ul>
         <button id="close-welcome" style="width:100%; padding:15px; background:var(--accent); font-family:'VT323'; font-size:1.5rem; cursor:pointer; border:4px solid #000;">START HARVESTING</button>
     </div>
@@ -109,15 +99,10 @@
             <select id="theme-sel" onchange="updateSeasonNews(this.value)" style="width:100%; font-family:'VT323'; background:#000; color:white; border:4px solid var(--accent); font-size:1.4rem;">
                 <option value="default">JUNGLE 🌴</option>
                 <option value="newyear">NEW YEAR'S DAY 🎆</option>
-                <option value="mlk">MLK DAY 🕊️</option>
                 <option value="valentine">VALENTINE'S DAY ❤️</option>
                 <option value="spring">SPRING / EASTER 🌸</option>
-                <option value="memorial">MEMORIAL DAY 🇺🇸</option>
                 <option value="july4">INDEPENDENCE DAY 🗽</option>
-                <option value="summer">SUMMER SOLSTICE ☀️</option>
-                <option value="autumn">LABOR DAY / AUTUMN 🍂</option>
                 <option value="halloween">HALLOWEEN 🎃</option>
-                <option value="winter">THANKSGIVING 🦃</option>
                 <option value="christmas">CHRISTMAS 🎄</option>
             </select>
             <div id="chat-container" style="margin-top:20px; border:2px solid #000; height:150px; display:flex; flex-direction:column; background:#000;">
@@ -128,7 +113,7 @@
     </div>
 
     <div class="center-stage">
-        <div class="empire-box">
+        <div class="empire-box" id="empire-container">
             <span id="empire-name">LOADING...</span>
             <button class="rename-btn" onclick="changeName()">EDIT</button>
         </div>
@@ -137,9 +122,12 @@
             <div style="font-size:1.4rem; color:#333; font-weight:bold;">BPS: <span id="bps">0</span> | POW: <span id="pow">1</span></div>
         </div>
         <div id="emoji-clicker" class="pixel-engine">🍌</div>
+        
         <div class="leaderboard-container">
             <div class="header" style="font-size:1.2rem; padding:5px; border-bottom:var(--pixel-border);">GLOBAL RANKS</div>
             <div id="lb-content"></div>
+            <div class="header" style="font-size:1.2rem; padding:5px; border-top:var(--pixel-border); border-bottom:var(--pixel-border);">HALL OF FAME (REBIRTHS)</div>
+            <div id="hof-content"></div>
         </div>
     </div>
 
@@ -185,104 +173,40 @@
         ]
     };
 
-    const themeMap = { default:'🍌', spring:'🌸', summer:'☀️', autumn:'🍂', winter:'🦃', halloween:'🎃', christmas:'🎄', valentine:'❤️', newyear:'🎆', mlk:'🕊️', memorial:'🇺🇸', july4:'🗽' };
-    const newsData = {
-        default: ["Monkeys are 99% genetically similar to humans.", "A bunch of bananas is called a 'hand'."],
-        newyear: ["Monkeys resolution: Eat more potassium.", "Fireworks scare chimps, but bananas keep them calm."],
-        mlk: ["Monkeys stand for equality in the jungle.", "A dream of a world where all bananas are peeled equal."],
-        valentine: ["Chimps show affection by grooming and sharing fruit.", "Valentine bananas: Sweeter than chocolate."],
-        spring: ["Baby monkeys are born in spring to enjoy the fresh fruit.", "Easter bananas: Nature's yellow eggs."],
-        memorial: ["Saluting the service monkeys of history.", "Red, white, and yellow: A patriotic fruit salad."],
-        july4: ["Bananas are the most popular fruit in the USA.", "Monkeys love a good backyard BBQ grill-out."],
-        summer: ["Howler monkeys enjoy the long summer heat.", "Frozen bananas are the best summer treat."],
-        autumn: ["Labor Day: Monkeys work hard for the harvest.", "Fall harvest: Banana bread season is here."],
-        halloween: ["Spooky Monkeys: Chimps love pumpkin treats.", "Bananas in costumes: A terrifyingly sweet sight."],
-        winter: ["Thanksgiving: Monkeys are grateful for the high vine.", "Banana stuffing is a jungle holiday tradition."],
-        christmas: ["Chimps exchange bananas for the holidays.", "Santa's secret snack: A ripe banana."]
-    };
-
-    let currentTheme = 'default';
     let bananas = parseFloat(localStorage.getItem('bananas')) || 0;
     let counts = JSON.parse(localStorage.getItem('upgradeCounts')) || {};
+    let rebirths = parseInt(localStorage.getItem('rebirths')) || 0;
     let playerName = localStorage.getItem('pixelPlayerName') || "Primate_" + Math.floor(Math.random()*999);
-    
-    // NAME CHANGE LOGIC
-    function changeName() {
-        let newName = prompt("Enter your new Empire name (Max 15 characters):", playerName);
+    let currentTheme = 'default';
+
+    const themeMap = { default:'🍌', spring:'🌸', summer:'☀️', halloween:'🎃', christmas:'🎄', valentine:'❤️', newyear:'🎆', july4:'🗽' };
+
+    async function changeName() {
+        let newName = prompt("Enter your new unique Empire name (Max 15 characters):", playerName);
         if (newName) {
             newName = newName.trim().substring(0, 15);
-            // Simple filter for inappropriate language
-            const blocked = ["badword1", "badword2"]; // Add specific strings if needed
-            if (blocked.some(word => newName.toLowerCase().includes(word))) {
-                alert("Please choose a friendly name!");
-                return;
+            const snapshot = await db.ref('players').orderByChild('name').equalTo(newName).once('value');
+            if (snapshot.exists() && newName !== playerName) {
+                alert("That name is already taken!");
+            } else {
+                playerName = newName;
+                localStorage.setItem('pixelPlayerName', playerName);
+                updateUI();
+                save();
             }
-            playerName = newName;
-            localStorage.setItem('pixelPlayerName', playerName);
-            document.getElementById('empire-name').innerText = playerName.toUpperCase() + "'S EMPIRE";
-            save(); // Immediately update DB
         }
     }
 
-    document.getElementById('empire-name').innerText = playerName.toUpperCase() + "'S EMPIRE";
-
-    if (!localStorage.getItem('welcomeSeen')) {
-        document.getElementById('overlay').style.display = 'flex';
-    }
-    document.getElementById('close-welcome').onclick = () => {
-        document.getElementById('overlay').style.display = 'none';
-        localStorage.setItem('welcomeSeen', 'true');
-    };
-
-    function spawnNormal() {
-        const b = document.createElement('div');
-        b.className = 'falling-item pixel-engine';
-        b.innerText = themeMap[currentTheme];
-        b.style.left = Math.random() * 90 + 'vw';
-        b.style.top = '-50px';
-        b.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        document.getElementById('particle-container').appendChild(b);
-        setTimeout(() => b.remove(), 4000);
-    }
-
-    function rollRare() {
-        const roll = Math.random();
-        if (roll < 0.01) spawnRare('angelic');
-        else if (roll < 0.21) spawnRare('golden');
-    }
-
-    function spawnRare(type) {
-        const b = document.createElement('div');
-        b.className = 'falling-item rare-item pixel-engine ' + (type === 'angelic' ? 'shimmer-angel' : 'shimmer-gold');
-        b.innerText = type === 'angelic' ? '👼' : '🍌';
-        b.style.left = Math.random() * 80 + 10 + 'vw';
-        b.onclick = () => { getRare(type === 'angelic' ? 500 : 50); b.remove(); };
-        document.getElementById('particle-container').appendChild(b);
-        setTimeout(() => b.remove(), 8000);
-    }
-
-    function getRare(mult) {
-        let p = 1; upgrades.market.forEach(u => p += (counts[u.id] || 0) * u.power);
-        bananas += (p * mult);
-        updateUI();
-    }
-
-    function updateSeasonNews(v) {
-        currentTheme = v;
-        document.body.className = 'theme-' + v;
-        document.getElementById('emoji-clicker').innerText = themeMap[v];
-        let bank = newsData[v] || newsData.default;
-        let tickerStr = "";
-        for(let i=0; i<200; i++) tickerStr += ` • [BANANA NEWS] ${bank[i % bank.length].toUpperCase()} • `;
-        document.getElementById('news-content').innerText = tickerStr;
-    }
-
-    function buyItem(type, id) {
-        const u = upgrades[type].find(x => x.id === id);
-        const cost = Math.floor(u.base * Math.pow(1.15, (counts[id] || 0)));
-        if(bananas >= cost) {
-            bananas -= cost;
-            counts[id] = (counts[id] || 0) + 1;
+    function performRebirth() {
+        if (confirm("Rebirth? You will lose everything but gain a PERMANENT 2x multiplier!")) {
+            rebirths++;
+            bananas = 0;
+            counts = {};
+            localStorage.setItem('rebirths', rebirths);
+            localStorage.setItem('bananas', 0);
+            localStorage.setItem('upgradeCounts', JSON.stringify({}));
+            const rbBtn = document.getElementById('rebirth-btn');
+            if(rbBtn) rbBtn.remove();
             updateUI();
             save();
         }
@@ -292,14 +216,32 @@
         let curBps = 0, curPow = 1;
         upgrades.market.forEach(u => curPow += (counts[u.id] || 0) * u.power);
         upgrades.producer.forEach(u => curBps += (counts[u.id] || 0) * u.bps);
+        
+        let multiplier = Math.pow(2, rebirths);
+        curBps *= multiplier; curPow *= multiplier;
+
         document.getElementById('score').innerText = Math.floor(bananas).toLocaleString();
-        document.getElementById('bps').innerText = curBps.toLocaleString();
-        document.getElementById('pow').innerText = curPow.toLocaleString();
+        document.getElementById('bps').innerText = Math.floor(curBps).toLocaleString();
+        document.getElementById('pow').innerText = Math.floor(curPow).toLocaleString();
+
+        const vBadge = bananas >= 1000000 ? ' <span style="color:#38bdf8; font-weight:bold;">[✓]</span>' : '';
+        const rBadge = rebirths > 0 ? ` <span style="color:#facc15;">[R${rebirths}]</span>` : '';
+        document.getElementById('empire-name').innerHTML = playerName.toUpperCase() + "'S EMPIRE" + vBadge + rBadge;
+
+        if (bananas >= 1000000000 && !document.getElementById('rebirth-btn')) {
+            const rbBtn = document.createElement('button');
+            rbBtn.id = 'rebirth-btn';
+            rbBtn.innerText = "REBIRTH";
+            rbBtn.style = "background:#ef4444; color:white; border:2px solid #000; font-family:'VT323'; cursor:pointer; margin-left:10px; font-size:1rem; padding:2px 6px;";
+            rbBtn.onclick = performRebirth;
+            document.getElementById('empire-container').appendChild(rbBtn);
+        }
 
         [...upgrades.market, ...upgrades.producer].forEach(u => {
             const el = document.getElementById('btn-' + u.id);
+            if(!el) return;
             const cost = Math.floor(u.base * Math.pow(1.15, (counts[u.id] || 0)));
-            if (bananas >= cost * 0.7 || (counts[u.id] > 0)) {
+            if (bananas >= cost * 0.7 || counts[u.id] > 0) {
                 el.classList.add('discovered');
                 el.classList.toggle('locked', bananas < cost);
             }
@@ -309,57 +251,73 @@
         const assetBox = document.getElementById('asset-display');
         assetBox.innerHTML = '';
         upgrades.producer.forEach(u => {
-            let num = counts[u.id] || 0;
-            if(num > 0) {
-                assetBox.innerHTML += `<div class="asset-row"><span class="asset-icon">${u.icon}</span><div style="flex:1"><b>${u.name} x${num}</b><br><small>+${(num*u.bps).toLocaleString()} BPS</small></div></div>`;
+            if(counts[u.id] > 0) {
+                assetBox.innerHTML += `<div class="asset-row"><span class="asset-icon">${u.icon}</span><div><b>${u.name} x${counts[u.id]}</b><br><small>+${(counts[u.id]*u.bps*multiplier).toLocaleString()} BPS</small></div></div>`;
             }
         });
+    }
+
+    function spawnRare(type) {
+        const b = document.createElement('div');
+        b.className = 'falling-item rare-item pixel-engine ' + (type === 'angelic' ? 'shimmer-angel' : 'shimmer-gold');
+        b.innerText = type === 'angelic' ? '👼' : '🍌';
+        b.style.left = Math.random() * 80 + 10 + 'vw';
+        b.onclick = () => { 
+            let p = 1; upgrades.market.forEach(u => p += (counts[u.id] || 0) * u.power);
+            bananas += (p * (type === 'angelic' ? 500 : 50) * Math.pow(2, rebirths)); 
+            b.remove(); updateUI(); 
+        };
+        document.getElementById('particle-container').appendChild(b);
+        setTimeout(() => b.remove(), 8000);
     }
 
     function save() {
         localStorage.setItem('bananas', bananas);
         localStorage.setItem('upgradeCounts', JSON.stringify(counts));
-        db.ref('players/' + playerName).set({ name: playerName, score: Math.floor(bananas) });
+        db.ref('players/' + playerName).set({ name: playerName, score: Math.floor(bananas), rebirths: rebirths });
     }
 
     upgrades.market.forEach(u => document.getElementById('market-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyItem('market','${u.id}')"></div>`);
     upgrades.producer.forEach(u => document.getElementById('producer-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyItem('producer','${u.id}')"></div>`);
 
-    setInterval(spawnNormal, 400); 
-    setInterval(rollRare, 60000); 
-    setInterval(() => {
-        let tickBps = 0; upgrades.producer.forEach(u => tickBps += (counts[u.id] || 0) * u.bps);
-        bananas += tickBps / 10; updateUI();
-    }, 100);
+    function buyItem(type, id) {
+        const u = upgrades[type].find(x => x.id === id);
+        const cost = Math.floor(u.base * Math.pow(1.15, (counts[id] || 0)));
+        if(bananas >= cost) { bananas -= cost; counts[id] = (counts[id] || 0) + 1; updateUI(); save(); }
+    }
 
     document.getElementById('emoji-clicker').onclick = () => {
         let p = 1; upgrades.market.forEach(u => p += (counts[u.id] || 0) * u.power);
-        bananas += p; spawnNormal(); updateUI();
+        bananas += (p * Math.pow(2, rebirths)); updateUI();
     };
 
-    document.getElementById('chat-in').onkeypress = (e) => { 
-        if(e.key === 'Enter' && e.target.value) { db.ref('chat').push({user: playerName, text: e.target.value}); e.target.value = ''; } 
-    };
-
-    db.ref('chat').limitToLast(8).on('value', s => {
-        const m = document.getElementById('chat-msgs'); m.innerHTML = '';
-        s.forEach(x => { m.innerHTML += `<div><span style="color:var(--accent)">${x.val().user}:</span> ${x.val().text}</div>`; });
-        m.scrollTop = m.scrollHeight;
-    });
-
+    // Global Score Leaderboard
     db.ref('players').orderByChild('score').limitToLast(10).on('value', s => {
-        let players = [];
-        s.forEach(child => { players.push(child.val()); });
-        players.sort((a, b) => b.score - a.score);
-        document.getElementById('lb-content').innerHTML = players.map((x, i) => 
-            `<div style="padding:4px; border-bottom:1px solid #222">#${i + 1} ${x.name}: ${x.score.toLocaleString()}</div>`
-        ).join('');
+        let players = []; s.forEach(c => players.push(c.val()));
+        players.sort((a,b) => b.score - a.score);
+        document.getElementById('lb-content').innerHTML = players.map((x,i) => {
+            const v = x.score >= 1000000 ? ' <span style="color:#38bdf8;">[✓]</span>' : '';
+            return `<div style="padding:4px; border-bottom:1px solid #222">#${i+1} ${x.name}${v}: ${x.score.toLocaleString()}</div>`;
+        }).join('');
     });
 
+    // Hall of Fame (Rebirths) Leaderboard
+    db.ref('players').orderByChild('rebirths').limitToLast(10).on('value', s => {
+        let players = []; s.forEach(c => players.push(c.val()));
+        players.sort((a,b) => b.rebirths - a.rebirths);
+        document.getElementById('hof-content').innerHTML = players.map((x,i) => {
+            if (x.rebirths < 1) return "";
+            return `<div style="padding:4px; border-bottom:1px solid #222">⭐ ${x.name}: ${x.rebirths} REBIRTHS</div>`;
+        }).join('');
+    });
+
+    if (!localStorage.getItem('welcomeSeen')) document.getElementById('overlay').style.display = 'flex';
+    document.getElementById('close-welcome').onclick = () => { document.getElementById('overlay').style.display='none'; localStorage.setItem('welcomeSeen','true'); };
+
+    setInterval(() => { let b = 0; upgrades.producer.forEach(u => b += (counts[u.id] || 0) * u.bps); bananas += (b * Math.pow(2, rebirths))/10; updateUI(); }, 100);
+    setInterval(() => { const r = Math.random(); if(r < 0.01) spawnRare('angelic'); else if(r < 0.21) spawnRare('golden'); }, 60000);
     setInterval(save, 30000);
-    updateSeasonNews('default');
     updateUI();
 </script>
 </body>
 </html>
-
