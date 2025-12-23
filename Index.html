@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULTRA PIXEL BANANA: LEADERBOARD FIXED</title>
+    <title>ULTRA PIXEL BANANA: IDENTITY EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
@@ -48,17 +48,17 @@
         
         .owned-tag { position: absolute; top: -12px; right: -5px; background: #000; color: #fff; padding: 2px 8px; font-size: 1rem; border: 2px solid var(--accent); z-index: 5; }
         
-        /* EMPIRE & STATS */
-        .empire-box { background: #000; border: var(--pixel-border); color: var(--accent); padding: 5px 20px; margin-bottom: 10px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); }
+        .empire-box { background: #000; border: var(--pixel-border); color: var(--accent); padding: 5px 20px; margin-bottom: 10px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); position: relative; display: flex; align-items: center; gap: 10px; }
+        .rename-btn { background: #333; color: #fff; border: 2px solid var(--accent); font-family: 'VT323'; cursor: pointer; font-size: 1rem; padding: 2px 6px; }
+        .rename-btn:hover { background: var(--accent); color: #000; }
+
         .stats-box { background: var(--text-box); border: var(--pixel-border); padding: 12px; width: 95%; text-align: center; box-shadow: 10px 10px 0 #000; }
         .score-display { font-size: 4rem; color: #000; line-height: 0.9; }
 
-        /* ASSETS (CLASSIC LOOK) */
         #asset-display { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
         .asset-row { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent); padding: 8px; color: #fff; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
         .asset-icon { font-size: 24px; filter: url(#pixelate); }
 
-        /* LEADERBOARD BOX */
         .leaderboard-container { width: 100%; background: #000; border: var(--pixel-border); color: var(--accent); flex: 1; overflow: hidden; margin-top: 15px; box-shadow: 8px 8px 0 rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         #lb-content { overflow-y: auto; flex: 1; font-size: 1.4rem; padding: 5px; }
 
@@ -69,7 +69,6 @@
         .ticker-text { display: inline-block; padding-left: 100%; animation: scroll-news 900s linear infinite; font-size: 2.2rem; white-space: nowrap; }
         @keyframes scroll-news { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
-        /* OVERLAYS */
         #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal { background: var(--panel-bg); border: var(--pixel-border); color: #fff; max-width: 600px; padding: 30px; box-shadow: 15px 15px 0 #000; position: relative; }
         .help-btn { position: absolute; top: 8px; right: 10px; background: #000; color: #fff; border: 2px solid var(--accent); cursor: pointer; padding: 2px 8px; font-size: 1.2rem; }
@@ -77,8 +76,6 @@
         #particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .falling-item { position: absolute; font-size: 25px; animation: fall linear forwards; cursor: pointer; pointer-events: auto; }
         .rare-item { font-size: 60px; z-index: 999; animation: rare-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), fall 8s linear forwards; }
-        
-        @keyframes rare-pop { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 100% { transform: scale(1.2) rotate(0deg); opacity: 1; } }
         @keyframes fall { from { top: -10vh; transform: rotate(0deg); } to { top: 110vh; transform: rotate(360deg); } }
         .shimmer-angel { filter: url(#pixelate) drop-shadow(0 0 20px white) brightness(1.2); }
         .shimmer-gold { filter: url(#pixelate) sepia(1) saturate(10) hue-rotate(40deg) drop-shadow(0 0 15px gold); }
@@ -93,9 +90,9 @@
         <h1 style="color:var(--accent); text-align:center;">WELCOME TO BANANA EMPIRE</h1>
         <ul style="font-size:1.4rem; list-style-type: '🍌 ';">
             <li><b>EMPIRE GROWTH:</b> Click the center emoji to harvest.</li>
-            <li><b>MINUTE RARITIES:</b> Every 60s: 20% for <b>GOLDEN</b> (50x) and 1% for <b>ANGELIC</b> (500x)!</li>
-            <li><b>HOLIDAY TIMELINE:</b> Select a US Holiday to change your theme and banana-news feed.</li>
-            <li><b>AUTOSAVE:</b> Progress saves every 30s and on purchase.</li>
+            <li><b>RARITIES:</b> 20% for <b>GOLDEN</b> (50x) and 1% for <b>ANGELIC</b> (500x) every 60s!</li>
+            <li><b>RENAME:</b> Click the small button next to your name to change it anytime.</li>
+            <li><b>AUTOSAVE:</b> Progress saves every 30s.</li>
         </ul>
         <button id="close-welcome" style="width:100%; padding:15px; background:var(--accent); font-family:'VT323'; font-size:1.5rem; cursor:pointer; border:4px solid #000;">START HARVESTING</button>
     </div>
@@ -131,7 +128,10 @@
     </div>
 
     <div class="center-stage">
-        <div class="empire-box" id="empire-name">LOADING...</div>
+        <div class="empire-box">
+            <span id="empire-name">LOADING...</span>
+            <button class="rename-btn" onclick="changeName()">EDIT</button>
+        </div>
         <div class="stats-box">
             <div id="score" class="score-display">0</div>
             <div style="font-size:1.4rem; color:#333; font-weight:bold;">BPS: <span id="bps">0</span> | POW: <span id="pow">1</span></div>
@@ -205,8 +205,26 @@
     let bananas = parseFloat(localStorage.getItem('bananas')) || 0;
     let counts = JSON.parse(localStorage.getItem('upgradeCounts')) || {};
     let playerName = localStorage.getItem('pixelPlayerName') || "Primate_" + Math.floor(Math.random()*999);
-    localStorage.setItem('pixelPlayerName', playerName);
-    document.getElementById('empire-name').innerText = playerName + "'S EMPIRE";
+    
+    // NAME CHANGE LOGIC
+    function changeName() {
+        let newName = prompt("Enter your new Empire name (Max 15 characters):", playerName);
+        if (newName) {
+            newName = newName.trim().substring(0, 15);
+            // Simple filter for inappropriate language
+            const blocked = ["badword1", "badword2"]; // Add specific strings if needed
+            if (blocked.some(word => newName.toLowerCase().includes(word))) {
+                alert("Please choose a friendly name!");
+                return;
+            }
+            playerName = newName;
+            localStorage.setItem('pixelPlayerName', playerName);
+            document.getElementById('empire-name').innerText = playerName.toUpperCase() + "'S EMPIRE";
+            save(); // Immediately update DB
+        }
+    }
+
+    document.getElementById('empire-name').innerText = playerName.toUpperCase() + "'S EMPIRE";
 
     if (!localStorage.getItem('welcomeSeen')) {
         document.getElementById('overlay').style.display = 'flex';
@@ -329,7 +347,6 @@
         m.scrollTop = m.scrollHeight;
     });
 
-    // FIXED LEADERBOARD SYNC
     db.ref('players').orderByChild('score').limitToLast(10).on('value', s => {
         let players = [];
         s.forEach(child => { players.push(child.val()); });
