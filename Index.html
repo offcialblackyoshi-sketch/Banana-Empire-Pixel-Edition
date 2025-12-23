@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULTRA PIXEL BANANA: HOLIDAY EDITION</title>
+    <title>ULTRA PIXEL BANANA: LEADERBOARD FIXED</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
@@ -35,37 +35,49 @@
 
         body, html { height: 100%; margin: 0; font-family: 'VT323', monospace; background-color: var(--main-bg); overflow: hidden; display: flex; flex-direction: column; transition: all 0.5s ease; }
         .pixel-engine { image-rendering: pixelated; filter: url(#pixelate) contrast(160%) saturate(140%) drop-shadow(0 8px 0 rgba(0,0,0,0.4)); display: inline-block; }
+        
         .main-game-area { display: grid; grid-template-columns: 320px 1fr 320px; flex: 1; padding: 15px; gap: 20px; height: calc(100vh - 65px); z-index: 10; position: relative; }
         .side-panel { border: var(--pixel-border); background: var(--panel-bg); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 8px 8px 0 #000; }
         .center-stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px 0; height: 100%; }
+        
         .header { background: var(--header-bg); color: var(--accent); padding: 12px; font-size: 1.8rem; text-align: center; border-bottom: var(--pixel-border); text-transform: uppercase; position: relative; }
         .buy-card { background: var(--header-bg); border: 4px solid #000; color: var(--accent); padding: 14px; margin: 10px; cursor: pointer; display: none; position: relative; box-shadow: 0 6px 0 #000; transition: transform 0.05s; user-select: none; }
         .buy-card.discovered { display: block; }
         .buy-card:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
         .buy-card.locked { filter: brightness(0.5); cursor: not-allowed; }
+        
         .owned-tag { position: absolute; top: -12px; right: -5px; background: #000; color: #fff; padding: 2px 8px; font-size: 1rem; border: 2px solid var(--accent); z-index: 5; }
+        
+        /* EMPIRE & STATS */
         .empire-box { background: #000; border: var(--pixel-border); color: var(--accent); padding: 5px 20px; margin-bottom: 10px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); }
         .stats-box { background: var(--text-box); border: var(--pixel-border); padding: 12px; width: 95%; text-align: center; box-shadow: 10px 10px 0 #000; }
         .score-display { font-size: 4rem; color: #000; line-height: 0.9; }
+
+        /* ASSETS (CLASSIC LOOK) */
         #asset-display { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
         .asset-row { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent); padding: 8px; color: #fff; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
         .asset-icon { font-size: 24px; filter: url(#pixelate); }
+
+        /* LEADERBOARD BOX */
         .leaderboard-container { width: 100%; background: #000; border: var(--pixel-border); color: var(--accent); flex: 1; overflow: hidden; margin-top: 15px; box-shadow: 8px 8px 0 rgba(0,0,0,0.5); display: flex; flex-direction: column; }
         #lb-content { overflow-y: auto; flex: 1; font-size: 1.4rem; padding: 5px; }
+
         #emoji-clicker { font-size: 180px; cursor: pointer; user-select: none; transition: transform 0.05s; margin: 5px 0; }
         #emoji-clicker:active { transform: scale(0.85); }
+
         .news-ticker { height: 65px; background: #000; border-top: var(--pixel-border); color: var(--accent); display: flex; align-items: center; overflow: hidden; position: relative; z-index: 100; }
         .ticker-text { display: inline-block; padding-left: 100%; animation: scroll-news 900s linear infinite; font-size: 2.2rem; white-space: nowrap; }
         @keyframes scroll-news { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-        
+
         /* OVERLAYS */
         #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal { background: var(--panel-bg); border: var(--pixel-border); color: #fff; max-width: 600px; padding: 30px; box-shadow: 15px 15px 0 #000; position: relative; }
         .help-btn { position: absolute; top: 8px; right: 10px; background: #000; color: #fff; border: 2px solid var(--accent); cursor: pointer; padding: 2px 8px; font-size: 1.2rem; }
-        
+
         #particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .falling-item { position: absolute; font-size: 25px; animation: fall linear forwards; cursor: pointer; pointer-events: auto; }
         .rare-item { font-size: 60px; z-index: 999; animation: rare-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), fall 8s linear forwards; }
+        
         @keyframes rare-pop { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 100% { transform: scale(1.2) rotate(0deg); opacity: 1; } }
         @keyframes fall { from { top: -10vh; transform: rotate(0deg); } to { top: 110vh; transform: rotate(360deg); } }
         .shimmer-angel { filter: url(#pixelate) drop-shadow(0 0 20px white) brightness(1.2); }
@@ -196,7 +208,6 @@
     localStorage.setItem('pixelPlayerName', playerName);
     document.getElementById('empire-name').innerText = playerName + "'S EMPIRE";
 
-    // WELCOME SCREEN LOGIC
     if (!localStorage.getItem('welcomeSeen')) {
         document.getElementById('overlay').style.display = 'flex';
     }
@@ -318,9 +329,14 @@
         m.scrollTop = m.scrollHeight;
     });
 
+    // FIXED LEADERBOARD SYNC
     db.ref('players').orderByChild('score').limitToLast(10).on('value', s => {
-        let p = []; s.forEach(x => p.push(x.val()));
-        document.getElementById('lb-content').innerHTML = p.reverse().map((x,i) => `<div style="padding:4px; border-bottom:1px solid #222">#${i+1} ${x.name}: ${x.score.toLocaleString()}</div>`).join('');
+        let players = [];
+        s.forEach(child => { players.push(child.val()); });
+        players.sort((a, b) => b.score - a.score);
+        document.getElementById('lb-content').innerHTML = players.map((x, i) => 
+            `<div style="padding:4px; border-bottom:1px solid #222">#${i + 1} ${x.name}: ${x.score.toLocaleString()}</div>`
+        ).join('');
     });
 
     setInterval(save, 30000);
