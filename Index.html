@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banana Empire: Pixel Edition</title>
+    <title>ULTRA PIXEL BANANA: HOLIDAY EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
@@ -19,269 +19,313 @@
             --text-box: #fef9c3;
         }
 
-        .pixel-engine { image-rendering: pixelated; filter: url(#pixelate) contrast(150%) saturate(130%); }
-
         /* THEMES */
-        body.theme-default { --main-bg: #064e3b; --accent: #facc15; }
-        body.theme-newyear { --main-bg: #1e1b4b; --panel-bg: #312e81; --header-bg: #4338ca; --accent: #fcd34d; }
-        body.theme-valentine { --main-bg: #4c0519; --panel-bg: #831843; --header-bg: #9d174d; --accent: #fda4af; }
-        body.theme-stpatricks { --main-bg: #052e16; --panel-bg: #14532d; --header-bg: #166534; --accent: #4ade80; }
-        body.theme-july4 { --main-bg: #082f49; --panel-bg: #1e3a8a; --header-bg: #b91c1c; --accent: #93c5fd; }
-        body.theme-halloween { --main-bg: #0c0a09; --panel-bg: #441907; --header-bg: #ea580c; --accent: #fb923c; }
-        body.theme-thanksgiving { --main-bg: #451a03; --panel-bg: #78350f; --header-bg: #b45309; --accent: #fcd34d; }
-        body.theme-christmas { --main-bg: #052e16; --panel-bg: #7f1d1d; --header-bg: #991b1b; --accent: #fecaca; }
+        body.theme-default { --main-bg: #064e3b; --accent: #facc15; --header-bg: #166534; --panel-bg: #78350f; --text-box: #fef9c3; }
+        body.theme-spring { --main-bg: #14532d; --accent: #4ade80; --header-bg: #166534; --panel-bg: #064e3b; --text-box: #dcfce7; }
+        body.theme-summer { --main-bg: #7c2d12; --accent: #fbbf24; --header-bg: #9a3412; --panel-bg: #7c2d12; --text-box: #fef3c7; }
+        body.theme-autumn { --main-bg: #431407; --accent: #f97316; --header-bg: #7c2d12; --panel-bg: #451a03; --text-box: #ffedd5; }
+        body.theme-winter { --main-bg: #0c4a6e; --accent: #7dd3fc; --header-bg: #075985; --panel-bg: #0c4a6e; --text-box: #e0f2fe; }
+        body.theme-halloween { --main-bg: #0c0a09; --accent: #fb923c; --header-bg: #ea580c; --panel-bg: #441907; --text-box: #fed7aa; }
+        body.theme-christmas { --main-bg: #052e16; --accent: #ef4444; --header-bg: #991b1b; --panel-bg: #7f1d1d; --text-box: #fee2e2; }
+        body.theme-valentine { --main-bg: #4c0519; --accent: #fda4af; --header-bg: #9d174d; --panel-bg: #831843; --text-box: #ffe4e6; }
+        body.theme-newyear { --main-bg: #1e1b4b; --accent: #fcd34d; --header-bg: #312e81; --panel-bg: #1e1b4b; --text-box: #eef2ff; }
+        body.theme-mlk { --main-bg: #422006; --accent: #fbbf24; --header-bg: #713f12; --panel-bg: #451a03; --text-box: #fef3c7; }
+        body.theme-memorial { --main-bg: #1e3a8a; --accent: #ef4444; --header-bg: #1e40af; --panel-bg: #1e3a8a; --text-box: #f8fafc; }
+        body.theme-july4 { --main-bg: #7f1d1d; --accent: #f8fafc; --header-bg: #1e3a8a; --panel-bg: #0f172a; --text-box: #fee2e2; }
 
         body, html { height: 100%; margin: 0; font-family: 'VT323', monospace; background-color: var(--main-bg); overflow: hidden; display: flex; flex-direction: column; transition: all 0.5s ease; }
-        
-        /* MODALS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; }
-        .modal-content { background: var(--text-box); border: var(--pixel-border); width: 85%; max-width: 650px; padding: 25px; box-shadow: 10px 10px 0 #000; max-height: 85vh; overflow-y: auto; }
-        .modal-header { font-size: 3rem; color: #000; border-bottom: 6px solid #000; margin-bottom: 20px; text-align: center; text-transform: uppercase; }
-        .modal-text { font-size: 1.4rem; color: #000; line-height: 1.3; }
-        .close-btn { background: #ef4444; color: white; border: var(--pixel-border); padding: 12px 25px; font-family: 'VT323'; font-size: 1.8rem; cursor: pointer; display: block; margin: 20px auto 0; box-shadow: 4px 4px 0 #000; }
-        .help-trigger { background: #000; color: #facc15; padding: 10px; text-align: center; cursor: pointer; border-bottom: var(--pixel-border); font-size: 1.4rem; }
-
-        /* GAME LAYOUT */
-        .main-game-area { position: relative; z-index: 1; display: grid; grid-template-columns: 320px 1fr 320px; flex: 1; padding: 10px; gap: 15px; height: calc(100vh - 40px); }
-        .side-panel { border: var(--pixel-border); background: var(--panel-bg); display: flex; flex-direction: column; box-shadow: 8px 8px 0 #000; overflow-y: auto; }
-        .center-stage { display: flex; flex-direction: column; align-items: center; padding: 10px; gap: 10px; }
-        .header { background: var(--header-bg); color: var(--accent); padding: 12px; font-size: 1.8rem; text-align: center; border-bottom: var(--pixel-border); text-transform: uppercase; position: sticky; top: 0; z-index: 10;}
-
-        /* CLICKER & PARTICLES */
-        #particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .particle { position: absolute; font-size: 24px; animation: fall linear forwards; }
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-
-        #golden-item { position: fixed; font-size: 80px; cursor: pointer; z-index: 100; display: none; filter: drop-shadow(0 0 30px gold) brightness(1.4); animation: g-float 2s infinite ease-in-out; }
-        @keyframes g-float { 0%, 100% { transform: scale(1) rotate(-10deg); } 50% { transform: scale(1.2) rotate(10deg); } }
-
-        .stats-box { background: var(--text-box); border: var(--pixel-border); padding: 15px; width: 100%; text-align: center; box-shadow: 6px 6px 0 #000; }
-        #emoji-clicker { font-size: 140px; cursor: pointer; user-select: none; transition: transform 0.05s; margin: 15px 0; }
+        .pixel-engine { image-rendering: pixelated; filter: url(#pixelate) contrast(160%) saturate(140%) drop-shadow(0 8px 0 rgba(0,0,0,0.4)); display: inline-block; }
+        .main-game-area { display: grid; grid-template-columns: 320px 1fr 320px; flex: 1; padding: 15px; gap: 20px; height: calc(100vh - 65px); z-index: 10; position: relative; }
+        .side-panel { border: var(--pixel-border); background: var(--panel-bg); display: flex; flex-direction: column; overflow-y: auto; box-shadow: 8px 8px 0 #000; }
+        .center-stage { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px 0; height: 100%; }
+        .header { background: var(--header-bg); color: var(--accent); padding: 12px; font-size: 1.8rem; text-align: center; border-bottom: var(--pixel-border); text-transform: uppercase; position: relative; }
+        .buy-card { background: var(--header-bg); border: 4px solid #000; color: var(--accent); padding: 14px; margin: 10px; cursor: pointer; display: none; position: relative; box-shadow: 0 6px 0 #000; transition: transform 0.05s; user-select: none; }
+        .buy-card.discovered { display: block; }
+        .buy-card:active { transform: translateY(4px); box-shadow: 0 2px 0 #000; }
+        .buy-card.locked { filter: brightness(0.5); cursor: not-allowed; }
+        .owned-tag { position: absolute; top: -12px; right: -5px; background: #000; color: #fff; padding: 2px 8px; font-size: 1rem; border: 2px solid var(--accent); z-index: 5; }
+        .empire-box { background: #000; border: var(--pixel-border); color: var(--accent); padding: 5px 20px; margin-bottom: 10px; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 2px; box-shadow: 6px 6px 0 rgba(0,0,0,0.3); }
+        .stats-box { background: var(--text-box); border: var(--pixel-border); padding: 12px; width: 95%; text-align: center; box-shadow: 10px 10px 0 #000; }
+        .score-display { font-size: 4rem; color: #000; line-height: 0.9; }
+        #asset-display { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .asset-row { background: rgba(0,0,0,0.3); border-left: 4px solid var(--accent); padding: 8px; color: #fff; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
+        .asset-icon { font-size: 24px; filter: url(#pixelate); }
+        .leaderboard-container { width: 100%; background: #000; border: var(--pixel-border); color: var(--accent); flex: 1; overflow: hidden; margin-top: 15px; box-shadow: 8px 8px 0 rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+        #lb-content { overflow-y: auto; flex: 1; font-size: 1.4rem; padding: 5px; }
+        #emoji-clicker { font-size: 180px; cursor: pointer; user-select: none; transition: transform 0.05s; margin: 5px 0; }
         #emoji-clicker:active { transform: scale(0.85); }
-
-        .news-ticker { height: 45px; background: #000; border-top: var(--pixel-border); color: var(--accent); display: flex; align-items: center; overflow: hidden; position: relative; z-index: 10; }
-        .ticker-text { display: inline-block; padding-left: 100%; animation: scroll-news 50s linear infinite; font-size: 1.6rem; white-space: nowrap; }
-        @keyframes scroll-news { from { transform: translateX(0); } to { transform: translateX(-800%); } }
-
-        .buy-card { background: var(--header-bg); border: 4px solid #000; color: var(--accent); padding: 10px; margin: 8px; cursor: pointer; text-align: left; display: none; box-shadow: 4px 4px 0 #000; }
-        .buy-card.visible { display: block; }
-        .buy-card.disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
-        .buy-card span { float: right; font-weight: bold; }
-        .inv-row { border-bottom: 2px solid #000; padding: 8px 12px; background: rgba(0,0,0,0.3); color: white; font-size: 1.2rem; }
+        .news-ticker { height: 65px; background: #000; border-top: var(--pixel-border); color: var(--accent); display: flex; align-items: center; overflow: hidden; position: relative; z-index: 100; }
+        .ticker-text { display: inline-block; padding-left: 100%; animation: scroll-news 900s linear infinite; font-size: 2.2rem; white-space: nowrap; }
+        @keyframes scroll-news { from { transform: translateX(0); } to { transform: translateX(-100%); } }
         
-        .leaderboard-box { width: 100%; background: #000; border: var(--pixel-border); color: var(--accent); padding: 10px; box-shadow: 6px 6px 0 #000; flex: 1; overflow-y: auto; }
-        .lb-row { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #333; font-size: 1.3rem; }
-        .me { background: #222; border-left: 6px solid var(--accent); }
-        #save-notify { position: fixed; bottom: 60px; right: 20px; color: #4ade80; background: #000; padding: 5px 10px; border: 2px solid #4ade80; display: none; z-index: 1000; }
+        /* OVERLAYS */
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal { background: var(--panel-bg); border: var(--pixel-border); color: #fff; max-width: 600px; padding: 30px; box-shadow: 15px 15px 0 #000; position: relative; }
+        .help-btn { position: absolute; top: 8px; right: 10px; background: #000; color: #fff; border: 2px solid var(--accent); cursor: pointer; padding: 2px 8px; font-size: 1.2rem; }
+        
+        #particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .falling-item { position: absolute; font-size: 25px; animation: fall linear forwards; cursor: pointer; pointer-events: auto; }
+        .rare-item { font-size: 60px; z-index: 999; animation: rare-pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), fall 8s linear forwards; }
+        @keyframes rare-pop { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 100% { transform: scale(1.2) rotate(0deg); opacity: 1; } }
+        @keyframes fall { from { top: -10vh; transform: rotate(0deg); } to { top: 110vh; transform: rotate(360deg); } }
+        .shimmer-angel { filter: url(#pixelate) drop-shadow(0 0 20px white) brightness(1.2); }
+        .shimmer-gold { filter: url(#pixelate) sepia(1) saturate(10) hue-rotate(40deg) drop-shadow(0 0 15px gold); }
     </style>
 </head>
-<body id="game-body" class="theme-default">
+<body class="theme-default">
 
-<div id="welcome-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content">
-        <div class="modal-header">Empire Initialized</div>
-        <div class="modal-text">
-            <p><strong>🍌 CLICK:</strong> Use the central fruit to generate your starting capital.</p>
-            <p><strong>🏢 INFRASTRUCTURE:</strong> Market (Left) for Click Power, Producers (Right) for Automation.</p>
-            <p><strong>🗞️ GNN NEWS:</strong> Real history and absurd banana fiction based on your season.</p>
-            <p><strong>💾 AUTOSAVE:</strong> Your progress is automatically saved every 5 seconds!</p>
-        </div>
-        <button class="close-btn" onclick="closeWelcome()">BEGIN OPERATION</button>
-    </div>
-</div>
+<svg width="0" height="0" style="position:absolute"><filter id="pixelate" x="0" y="0"><feFlood x="4" y="4" height="2" width="2"/><feComposite width="4" height="4"/><feTile/><feComposite in="SourceGraphic" operator="in"/><feMorphology operator="dilate" radius="2"/></filter></svg>
 
-<div id="help-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content">
-        <div class="modal-header">Manual V.2</div>
-        <div class="modal-text" id="help-content"></div>
-        <button class="close-btn" onclick="toggleHelp()">RESUME PRODUCTION</button>
+<div id="overlay">
+    <div class="modal">
+        <h1 style="color:var(--accent); text-align:center;">WELCOME TO BANANA EMPIRE</h1>
+        <ul style="font-size:1.4rem; list-style-type: '🍌 ';">
+            <li><b>EMPIRE GROWTH:</b> Click the center emoji to harvest.</li>
+            <li><b>MINUTE RARITIES:</b> Every 60s: 20% for <b>GOLDEN</b> (50x) and 1% for <b>ANGELIC</b> (500x)!</li>
+            <li><b>HOLIDAY TIMELINE:</b> Select a US Holiday to change your theme and banana-news feed.</li>
+            <li><b>AUTOSAVE:</b> Progress saves every 30s and on purchase.</li>
+        </ul>
+        <button id="close-welcome" style="width:100%; padding:15px; background:var(--accent); font-family:'VT323'; font-size:1.5rem; cursor:pointer; border:4px solid #000;">START HARVESTING</button>
     </div>
 </div>
 
 <div id="particle-container"></div>
-<div id="golden-item" class="pixel-engine" onclick="triggerFrenzy()">🍌</div>
-<div id="save-notify">SAVED TO CLOUD</div>
-
-<svg width="0" height="0" style="position:absolute"><filter id="pixelate" x="0" y="0"><feFlood x="4" y="4" height="2" width="2"/><feComposite width="4" height="4"/><feTile/><feComposite in="SourceGraphic" operator="in"/><feMorphology operator="dilate" radius="1.5"/></filter></svg>
 
 <div class="main-game-area">
     <div class="side-panel">
-        <div class="help-trigger" onclick="toggleHelp()">[ DOCUMENTATION ]</div>
-        <div class="header">Market</div>
+        <div class="header">Market <button class="help-btn" onclick="document.getElementById('overlay').style.display='flex'">?</button></div>
         <div id="market-list"></div>
-        <div class="header" style="margin-top:20px;">Timeline</div>
+        <div class="header" style="margin-top:20px;">Holiday Timeline</div>
         <div style="padding:15px;">
-            <select id="theme-sel" onchange="setTheme(this.value)" style="width:100%; font-family:'VT323'; background:#000; color:white; border:4px solid var(--accent); font-size:1.4rem;">
+            <select id="theme-sel" onchange="updateSeasonNews(this.value)" style="width:100%; font-family:'VT323'; background:#000; color:white; border:4px solid var(--accent); font-size:1.4rem;">
                 <option value="default">JUNGLE 🌴</option>
-                <option value="newyear">NEW YEAR 🎆</option>
-                <option value="valentine">VALENTINE ❤️</option>
-                <option value="stpatricks">ST. PATRICK 🍀</option>
-                <option value="july4">INDEPENDENCE 🇺🇸</option>
-                <option value="halloween">SPOOKY 🎃</option>
-                <option value="thanksgiving">HARVEST 🦃</option>
-                <option value="christmas">WINTER 🎄</option>
+                <option value="newyear">NEW YEAR'S DAY 🎆</option>
+                <option value="mlk">MLK DAY 🕊️</option>
+                <option value="valentine">VALENTINE'S DAY ❤️</option>
+                <option value="spring">SPRING / EASTER 🌸</option>
+                <option value="memorial">MEMORIAL DAY 🇺🇸</option>
+                <option value="july4">INDEPENDENCE DAY 🗽</option>
+                <option value="summer">SUMMER SOLSTICE ☀️</option>
+                <option value="autumn">LABOR DAY / AUTUMN 🍂</option>
+                <option value="halloween">HALLOWEEN 🎃</option>
+                <option value="winter">THANKSGIVING 🦃</option>
+                <option value="christmas">CHRISTMAS 🎄</option>
             </select>
+            <div id="chat-container" style="margin-top:20px; border:2px solid #000; height:150px; display:flex; flex-direction:column; background:#000;">
+                <div id="chat-msgs" style="flex:1; overflow-y:auto; color:white; padding:5px; font-size:0.9rem;"></div>
+                <input type="text" id="chat-in" placeholder="Chat..." style="background:#111; border:none; color:var(--accent); font-family:'VT323'; padding:5px;">
+            </div>
         </div>
     </div>
 
     <div class="center-stage">
-        <div id="frenzy-timer" style="display:none; color:gold; font-size:1.8rem; font-weight:bold; text-shadow:2px 2px #000;">FRENZY ACTIVE: <span id="ftime">30</span>s</div>
-        <div style="background:#000; border:4px solid var(--accent); padding:8px 20px; cursor:pointer; width:100%; text-align:center;" onclick="renameEmpire()">
-            <div id="name-tag" style="color:white; font-size: 1.6rem;">[ RENAME EMPIRE ]</div>
-        </div>
+        <div class="empire-box" id="empire-name">LOADING...</div>
         <div class="stats-box">
-            <div id="score" style="font-size: 4rem; color: #000; line-height:1;">0</div>
-            <div style="display:flex; justify-content: space-around; font-size: 1.5rem; color: #000; border-top: 3px solid #000; margin-top:10px; padding-top:5px;">
-                <div>BPS: <span id="bps">0</span></div>
-                <div>POWER: <span id="pow">1</span></div>
-            </div>
+            <div id="score" class="score-display">0</div>
+            <div style="font-size:1.4rem; color:#333; font-weight:bold;">BPS: <span id="bps">0</span> | POW: <span id="pow">1</span></div>
         </div>
         <div id="emoji-clicker" class="pixel-engine">🍌</div>
-        <div class="leaderboard-box"><div id="lb-content">Synchronizing...</div></div>
+        <div class="leaderboard-container">
+            <div class="header" style="font-size:1.2rem; padding:5px; border-bottom:var(--pixel-border);">GLOBAL RANKS</div>
+            <div id="lb-content"></div>
+        </div>
     </div>
 
     <div class="side-panel">
-        <div class="header">Producers</div>
+        <div class="header">Workforce</div>
         <div id="producer-list"></div>
-        <div class="header" style="margin-top:10px;">Assets</div>
-        <div id="inv-list"></div>
+        <div class="header" style="margin-top:10px;">Your Assets</div>
+        <div id="asset-display"></div>
     </div>
 </div>
 
-<div class="news-ticker"><div class="ticker-text" id="news-content">GNN: CONNECTING...</div></div>
+<div class="news-ticker"><div class="ticker-text" id="news-content">GNN: INITIALIZING...</div></div>
 
 <script>
     const firebaseConfig = { apiKey: "AIzaSyCTmXjtfuN-2DGJq9IUpCVvDk88IkFQSFg", authDomain: "banana-empire-42fda.firebaseapp.com", databaseURL: "https://banana-empire-42fda-default-rtdb.firebaseio.com", projectId: "banana-empire-42fda", storageBucket: "banana-empire-42fda.firebasestorage.app", messagingSenderId: "833181965750", appId: "1:833181965750:web:2abf119335bee9a0157517" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let bananas = 0, bps = 0, clickPower = 1, currentTheme = 'default';
-    let myName = localStorage.getItem('bananaName') || "CEO_" + Math.floor(Math.random() * 999);
-    let isFrenzy = false, frenzyMult = 1;
-
-    // OVERFLOWING NEWS DATABASE
-    const newsDatabase = {
-        default: ["[REAL] Bananas are berries.", "[FAKE] Giant banana moon discovered.", "[REAL] 100B eaten yearly.", "[FAKE] Peels used as road fuel."],
-        newyear: ["[REAL] Ball drop since 1907.", "[FAKE] 2026 canceled due to potassium shortage.", "[REAL] First resolutions 4,000 years ago."],
-        valentine: ["[REAL] 145M cards sent today.", "[FAKE] Cupid now shoots banana slices.", "[REAL] First heart-shaped chocolates in 1861."],
-        stpatricks: ["[REAL] Blue was the original color.", "[FAKE] Leprechaun caught hoarding bananas.", "[REAL] Chicago dyes river green since 1962."],
-        july4: ["[REAL] 150M hot dogs eaten today.", "[FAKE] Eagle carrying giant fruit over DC.", "[REAL] 3 Presidents died on July 4."],
-        halloween: ["[REAL] Jack-o'-lanterns were originally turnips.", "[FAKE] Ghost slips on own ectoplasm.", "[REAL] Halloween is $10B industry."],
-        thanksgiving: ["[REAL] First lasted 3 days.", "[FAKE] Turkey wears banana suit.", "[REAL] Sarah Hale saved the holiday."],
-        christmas: ["[REAL] Jingle Bells space song.", "[FAKE] Santa swaps reindeer for monkeys.", "[REAL] Tallest tree was 221ft."]
-    };
-
     const upgrades = {
-        market: [ {id:'m1', name:'Plastic Peeler', cost:15, power:1}, {id:'m2', name:'Metal Knife', cost:100, power:5}, {id:'m3', name:'Slicer', cost:500, power:15}, {id:'m4', name:'Nano-Blade', cost:2000, power:50}, {id:'m5', name:'Laser', cost:10000, power:200} ],
-        producer: [ {id:'p1', name:'Monkey', cost:50, bps:2, icon:'🐒'}, {id:'p2', name:'Tree', cost:250, bps:10, icon:'🌳'}, {id:'p3', name:'Truck', cost:1000, bps:45, icon:'🚚'}, {id:'p4', name:'Farm', cost:5000, bps:150, icon:'🚜'}, {id:'p5', name:'Factory', cost:20000, bps:500, icon:'🏭'} ]
+        market: [
+            {id:'m1', name:'Sticky Fingers', base:15, power:1},
+            {id:'m2', name:'Silverback Grip', base:150, power:5},
+            {id:'m3', name:'Golden Peeler', base:1000, power:20},
+            {id:'m4', name:'Banana Magnet', base:5000, power:75},
+            {id:'m5', name:'Carbon-Fiber Vine', base:25000, power:200},
+            {id:'m6', name:'Cyber-Monkey Arm', base:100000, power:600},
+            {id:'m7', name:'Gravity Glove', base:500000, power:1500},
+            {id:'m8', name:'Quantum Clicker', base:2000000, power:5000},
+            {id:'m9', name:'Singularity Squeeze', base:10000000, power:15000},
+            {id:'m10', name:'Divine Hand', base:50000000, power:50000}
+        ],
+        producer: [
+            {id:'p1', name:'Rookie Chimp', base:50, bps:2, icon:'🐒'},
+            {id:'p2', name:'Banana Orchard', base:500, bps:10, icon:'🌳'},
+            {id:'p3', name:'Gorilla Factory', base:3000, bps:40, icon:'🏭'},
+            {id:'p4', name:'Industrial Blender', base:15000, bps:120, icon:'🥤'},
+            {id:'p5', name:'Tree Geneticist', base:75000, bps:450, icon:'🧬'},
+            {id:'p6', name:'Space Station Farm', base:350000, bps:1500, icon:'🚀'},
+            {id:'p7', name:'Atmospheric Ripper', base:1500000, bps:5000, icon:'🌩️'},
+            {id:'p8', name:'Time Portal Peeler', base:8000000, bps:20000, icon:'🌀'},
+            {id:'p9', name:'Galaxy Harvester', base:40000000, bps:85000, icon:'🌌'},
+            {id:'p10', name:'Existence Itself', base:200000000, bps:250000, icon:'✨'}
+        ]
     };
-    let counts = {}; [...upgrades.market, ...upgrades.producer].forEach(u => counts[u.id] = 0);
 
-    const seasonalIcons = { default:'🍌', halloween:'🎃', christmas:'🎄', newyear:'🎆', valentine:'❤️', stpatricks:'🍀', july4:'🇺🇸', thanksgiving:'🦃' };
+    const themeMap = { default:'🍌', spring:'🌸', summer:'☀️', autumn:'🍂', winter:'🦃', halloween:'🎃', christmas:'🎄', valentine:'❤️', newyear:'🎆', mlk:'🕊️', memorial:'🇺🇸', july4:'🗽' };
+    const newsData = {
+        default: ["Monkeys are 99% genetically similar to humans.", "A bunch of bananas is called a 'hand'."],
+        newyear: ["Monkeys resolution: Eat more potassium.", "Fireworks scare chimps, but bananas keep them calm."],
+        mlk: ["Monkeys stand for equality in the jungle.", "A dream of a world where all bananas are peeled equal."],
+        valentine: ["Chimps show affection by grooming and sharing fruit.", "Valentine bananas: Sweeter than chocolate."],
+        spring: ["Baby monkeys are born in spring to enjoy the fresh fruit.", "Easter bananas: Nature's yellow eggs."],
+        memorial: ["Saluting the service monkeys of history.", "Red, white, and yellow: A patriotic fruit salad."],
+        july4: ["Bananas are the most popular fruit in the USA.", "Monkeys love a good backyard BBQ grill-out."],
+        summer: ["Howler monkeys enjoy the long summer heat.", "Frozen bananas are the best summer treat."],
+        autumn: ["Labor Day: Monkeys work hard for the harvest.", "Fall harvest: Banana bread season is here."],
+        halloween: ["Spooky Monkeys: Chimps love pumpkin treats.", "Bananas in costumes: A terrifyingly sweet sight."],
+        winter: ["Thanksgiving: Monkeys are grateful for the high vine.", "Banana stuffing is a jungle holiday tradition."],
+        christmas: ["Chimps exchange bananas for the holidays.", "Santa's secret snack: A ripe banana."]
+    };
 
-    // SAVE & LOAD LOGIC
-    function saveGame() {
-        const gameState = { bananas, bps, clickPower, counts, myName, currentTheme };
-        localStorage.setItem('bananaEmpire_SavedData', JSON.stringify(gameState));
-        db.ref('players/' + myName).set({ name: myName, score: Math.floor(bananas) });
-        
-        // Notify
-        const sn = document.getElementById('save-notify');
-        sn.style.display = 'block';
-        setTimeout(() => sn.style.display = 'none', 1000);
+    let currentTheme = 'default';
+    let bananas = parseFloat(localStorage.getItem('bananas')) || 0;
+    let counts = JSON.parse(localStorage.getItem('upgradeCounts')) || {};
+    let playerName = localStorage.getItem('pixelPlayerName') || "Primate_" + Math.floor(Math.random()*999);
+    localStorage.setItem('pixelPlayerName', playerName);
+    document.getElementById('empire-name').innerText = playerName + "'S EMPIRE";
+
+    // WELCOME SCREEN LOGIC
+    if (!localStorage.getItem('welcomeSeen')) {
+        document.getElementById('overlay').style.display = 'flex';
+    }
+    document.getElementById('close-welcome').onclick = () => {
+        document.getElementById('overlay').style.display = 'none';
+        localStorage.setItem('welcomeSeen', 'true');
+    };
+
+    function spawnNormal() {
+        const b = document.createElement('div');
+        b.className = 'falling-item pixel-engine';
+        b.innerText = themeMap[currentTheme];
+        b.style.left = Math.random() * 90 + 'vw';
+        b.style.top = '-50px';
+        b.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        document.getElementById('particle-container').appendChild(b);
+        setTimeout(() => b.remove(), 4000);
     }
 
-    function loadGame() {
-        const saved = localStorage.getItem('bananaEmpire_SavedData');
-        if (saved) {
-            const data = JSON.parse(saved);
-            bananas = data.bananas || 0;
-            bps = data.bps || 0;
-            clickPower = data.clickPower || 1;
-            counts = data.counts || counts;
-            myName = data.myName || myName;
-            currentTheme = data.currentTheme || 'default';
-            document.getElementById('theme-sel').value = currentTheme;
-            setTheme(currentTheme);
+    function rollRare() {
+        const roll = Math.random();
+        if (roll < 0.01) spawnRare('angelic');
+        else if (roll < 0.21) spawnRare('golden');
+    }
+
+    function spawnRare(type) {
+        const b = document.createElement('div');
+        b.className = 'falling-item rare-item pixel-engine ' + (type === 'angelic' ? 'shimmer-angel' : 'shimmer-gold');
+        b.innerText = type === 'angelic' ? '👼' : '🍌';
+        b.style.left = Math.random() * 80 + 10 + 'vw';
+        b.onclick = () => { getRare(type === 'angelic' ? 500 : 50); b.remove(); };
+        document.getElementById('particle-container').appendChild(b);
+        setTimeout(() => b.remove(), 8000);
+    }
+
+    function getRare(mult) {
+        let p = 1; upgrades.market.forEach(u => p += (counts[u.id] || 0) * u.power);
+        bananas += (p * mult);
+        updateUI();
+    }
+
+    function updateSeasonNews(v) {
+        currentTheme = v;
+        document.body.className = 'theme-' + v;
+        document.getElementById('emoji-clicker').innerText = themeMap[v];
+        let bank = newsData[v] || newsData.default;
+        let tickerStr = "";
+        for(let i=0; i<200; i++) tickerStr += ` • [BANANA NEWS] ${bank[i % bank.length].toUpperCase()} • `;
+        document.getElementById('news-content').innerText = tickerStr;
+    }
+
+    function buyItem(type, id) {
+        const u = upgrades[type].find(x => x.id === id);
+        const cost = Math.floor(u.base * Math.pow(1.15, (counts[id] || 0)));
+        if(bananas >= cost) {
+            bananas -= cost;
+            counts[id] = (counts[id] || 0) + 1;
+            updateUI();
+            save();
         }
     }
 
-    // UI & HELP
-    if (!localStorage.getItem('returningPlayer')) { document.getElementById('welcome-modal').style.display = 'flex'; }
-    function closeWelcome() { document.getElementById('welcome-modal').style.display = 'none'; localStorage.setItem('returningPlayer', 'true'); }
-    function toggleHelp() {
-        const modal = document.getElementById('help-modal');
-        document.getElementById('help-content').innerHTML = `
-            <p><strong>GOLDEN FRENZY:</strong> Every 50s, a Golden Banana spawns. Click for 30s of 2X Power!</p>
-            <p><strong>FOG OF WAR:</strong> Items hide until you have 70% of the cost.</p>
-            <p><strong>AUTO-SAVE:</strong> Progress is saved to your browser and global leaderboards every 5 seconds.</p>
-        `;
-        modal.style.display = (modal.style.display === 'none') ? 'flex' : 'none';
-    }
-
-    function setTheme(v) {
-        currentTheme = v; document.body.className = 'theme-' + v;
-        const pool = newsDatabase[currentTheme];
-        document.getElementById('news-content').innerText = pool[Math.floor(Math.random()*pool.length)];
-        document.getElementById('emoji-clicker').innerText = seasonalIcons[v];
-    }
-
-    // ENGINE
-    function triggerFrenzy() {
-        if(isFrenzy) return; isFrenzy = true; frenzyMult = 2;
-        document.getElementById('golden-item').style.display='none'; document.getElementById('frenzy-timer').style.display='block';
-        let t = 30; const clock = setInterval(() => {
-            t--; document.getElementById('ftime').innerText = t;
-            if(t<=0) { clearInterval(clock); isFrenzy=false; frenzyMult=1; document.getElementById('frenzy-timer').style.display='none'; }
-        }, 1000);
-    }
-
-    function buyMarket(id) {
-        const u = upgrades.market.find(x => x.id === id);
-        if(bananas >= u.cost) { bananas -= u.cost; clickPower += u.power; counts[id]++; updateUI(); }
-    }
-    function buyProducer(id) {
-        const u = upgrades.producer.find(x => x.id === id);
-        if(bananas >= u.cost) { bananas -= u.cost; bps += u.bps; counts[id]++; updateUI(); }
-    }
-
     function updateUI() {
+        let curBps = 0, curPow = 1;
+        upgrades.market.forEach(u => curPow += (counts[u.id] || 0) * u.power);
+        upgrades.producer.forEach(u => curBps += (counts[u.id] || 0) * u.bps);
         document.getElementById('score').innerText = Math.floor(bananas).toLocaleString();
-        document.getElementById('bps').innerText = (bps * frenzyMult).toLocaleString();
-        document.getElementById('pow').innerText = (clickPower * frenzyMult).toLocaleString();
-        document.getElementById('name-tag').innerText = myName;
+        document.getElementById('bps').innerText = curBps.toLocaleString();
+        document.getElementById('pow').innerText = curPow.toLocaleString();
+
         [...upgrades.market, ...upgrades.producer].forEach(u => {
-            const btn = document.getElementById('btn-' + u.id);
-            if(bananas >= u.cost * 0.7 || counts[u.id] > 0) btn.classList.add('visible');
-            btn.classList.toggle('disabled', bananas < u.cost);
+            const el = document.getElementById('btn-' + u.id);
+            const cost = Math.floor(u.base * Math.pow(1.15, (counts[u.id] || 0)));
+            if (bananas >= cost * 0.7 || (counts[u.id] > 0)) {
+                el.classList.add('discovered');
+                el.classList.toggle('locked', bananas < cost);
+            }
+            el.innerHTML = `${u.name} <div class="owned-tag">${counts[u.id] || 0}</div><span style="float:right">$${cost.toLocaleString()}</span>`;
         });
-        let inv = ""; upgrades.producer.forEach(u => { if(counts[u.id]>0) inv += `<div class="inv-row">${u.icon} ${u.name}: ${counts[u.id]}</div>`; });
-        document.getElementById('inv-list').innerHTML = inv || "No assets...";
+
+        const assetBox = document.getElementById('asset-display');
+        assetBox.innerHTML = '';
+        upgrades.producer.forEach(u => {
+            let num = counts[u.id] || 0;
+            if(num > 0) {
+                assetBox.innerHTML += `<div class="asset-row"><span class="asset-icon">${u.icon}</span><div style="flex:1"><b>${u.name} x${num}</b><br><small>+${(num*u.bps).toLocaleString()} BPS</small></div></div>`;
+            }
+        });
     }
 
-    function renameEmpire() {
-        const n = prompt("Change Empire ID?");
-        if(n) { db.ref('players/' + myName).remove(); myName = n.substring(0, 12).toUpperCase(); localStorage.setItem('bananaName', myName); updateUI(); }
+    function save() {
+        localStorage.setItem('bananas', bananas);
+        localStorage.setItem('upgradeCounts', JSON.stringify(counts));
+        db.ref('players/' + playerName).set({ name: playerName, score: Math.floor(bananas) });
     }
 
-    // INIT
-    upgrades.market.forEach(u => document.getElementById('market-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyMarket('${u.id}')">${u.name} <span>$${u.cost}</span></div>`);
-    upgrades.producer.forEach(u => document.getElementById('producer-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyProducer('${u.id}')">${u.name} <span>$${u.cost}</span></div>`);
-    
-    loadGame();
-    updateUI();
+    upgrades.market.forEach(u => document.getElementById('market-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyItem('market','${u.id}')"></div>`);
+    upgrades.producer.forEach(u => document.getElementById('producer-list').innerHTML += `<div class="buy-card" id="btn-${u.id}" onclick="buyItem('producer','${u.id}')"></div>`);
 
-    document.getElementById('emoji-clicker').onclick = () => { bananas += (clickPower * frenzyMult); updateUI(); };
-    setInterval(() => { const p=document.createElement('div'); p.className='particle'; p.innerText=seasonalIcons[currentTheme]; p.style.left=Math.random()*100+'vw'; p.style.animationDuration=(Math.random()*3+3)+'s'; document.getElementById('particle-container').appendChild(p); setTimeout(()=>p.remove(), 6000); }, 400);
-    setInterval(() => { const g=document.getElementById('golden-item'); g.style.left=Math.random()*70+15+'vw'; g.style.top=Math.random()*70+15+'vh'; g.style.display='block'; setTimeout(()=>g.style.display='none', 7000); }, 50000);
-    setInterval(() => { bananas += (bps * frenzyMult)/10; updateUI(); }, 100);
-    setInterval(saveGame, 5000);
+    setInterval(spawnNormal, 400); 
+    setInterval(rollRare, 60000); 
+    setInterval(() => {
+        let tickBps = 0; upgrades.producer.forEach(u => tickBps += (counts[u.id] || 0) * u.bps);
+        bananas += tickBps / 10; updateUI();
+    }, 100);
 
-    db.ref('players').orderByChild('score').limitToLast(10).on('value', (snap) => {
-        const val = snap.val(); let p = []; for(let k in val) p.push(val[k]);
-        p.sort((a,b) => b.score - a.score);
-        document.getElementById('lb-content').innerHTML = p.map((x, i) => `<div class="lb-row ${x.name === myName ? 'me' : ''}"><span>#${i+1} ${x.name}</span><span>${x.score.toLocaleString()}</span></div>`).join('');
+    document.getElementById('emoji-clicker').onclick = () => {
+        let p = 1; upgrades.market.forEach(u => p += (counts[u.id] || 0) * u.power);
+        bananas += p; spawnNormal(); updateUI();
+    };
+
+    document.getElementById('chat-in').onkeypress = (e) => { 
+        if(e.key === 'Enter' && e.target.value) { db.ref('chat').push({user: playerName, text: e.target.value}); e.target.value = ''; } 
+    };
+
+    db.ref('chat').limitToLast(8).on('value', s => {
+        const m = document.getElementById('chat-msgs'); m.innerHTML = '';
+        s.forEach(x => { m.innerHTML += `<div><span style="color:var(--accent)">${x.val().user}:</span> ${x.val().text}</div>`; });
+        m.scrollTop = m.scrollHeight;
     });
+
+    db.ref('players').orderByChild('score').limitToLast(10).on('value', s => {
+        let p = []; s.forEach(x => p.push(x.val()));
+        document.getElementById('lb-content').innerHTML = p.reverse().map((x,i) => `<div style="padding:4px; border-bottom:1px solid #222">#${i+1} ${x.name}: ${x.score.toLocaleString()}</div>`).join('');
+    });
+
+    setInterval(save, 30000);
+    updateSeasonNews('default');
+    updateUI();
 </script>
 </body>
 </html>
